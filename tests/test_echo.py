@@ -91,6 +91,23 @@ class TestEcho(unittest.TestCase):
     #
     # Students: add more parser tests here
     #
+    def test_help(self):
+        """Running the program without arguments should show usage."""
+
+        # Run the command `python ./echo.py -h` in a separate process, then
+        # collect its output.
+        process = subprocess.Popen(
+            ["python", "./echo.py", "-h"],
+            stdout=subprocess.PIPE)
+        stdout, _ = process.communicate()
+        with open("USAGE") as f:
+            usage = f.read()
+        print(len(usage))
+        print(len(stdout))
+        print(stdout, usage)
+        self.assertEqual(stdout.decode(), usage)
+
+
 
     def test_echo(self):
         """Check if main() function prints anything at all"""
@@ -114,9 +131,56 @@ class TestEcho(unittest.TestCase):
         assert output, "The program did not print anything."
         self.assertEqual(output[0], "hello world")
 
+    def test_lower_argparse(self):
+        args = ["-l", "HELLO WORLD"]
+        parser = self.module.create_parser()
+        ns = parser.parse_args(args)
+        self.assertTrue(ns.lower)
+
+    def test_upper_short(self):
+        """check if short option '-u' performs uppercasing"""
+        args = ["-u", "hello world"]
+        with Capturing() as output:
+            self.module.main(args)
+        assert output, "The program did not print anything."
+        self.assertEqual(output[0], "HELLO WORLD")
+
+    def test_upper_argparse(self):
+        args = ["-u", "hello world"]
+        parser = self.module.create_parser()
+        ns = parser.parse_args(args)
+        self.assertTrue(ns.upper)
+
+    def test_title_short(self):
+        """check if title option '-t' performs titlecasing"""
+        args = ["-t", "hello world"]
+        with Capturing() as output:
+            self.module.main(args)
+        assert output, "The program did not print anything."
+        self.assertEqual(output[0], "Hello World")
+
+    def test_title_argparse(self):
+        args = ["-t", "hello world"]
+        parser = self.module.create_parser()
+        ns = parser.parse_args(args)
+        self.assertTrue(ns.title)
+
+    def test_all(self):
+        """check if all flags perform actions in correct order"""
+        args = ["-tul", "hello world"]
+        with Capturing() as output:
+            self.module.main(args)
+        assert output, "The program did not print anything."
+        self.assertEqual(output[0], "Hello World")
+
+
     #
     # Students: add more cmd line options tests here.
     #
+
+
+
+
 
 
 if __name__ == '__main__':
