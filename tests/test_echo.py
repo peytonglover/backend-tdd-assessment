@@ -102,8 +102,10 @@ class TestEcho(unittest.TestCase):
         stdout, _ = process.communicate()
         with open("USAGE") as f:
             usage = f.read()
+        print(len(usage))
+        print(len(stdout))
         print(stdout, usage)
-        self.assertEqual(stdout, usage)
+        self.assertEqual(stdout.decode(), usage)
 
 
 
@@ -141,7 +143,7 @@ class TestEcho(unittest.TestCase):
         with Capturing() as output:
             self.module.main(args)
         assert output, "The program did not print anything."
-        self.assertEqual(output[0], "hello world")
+        self.assertEqual(output[0], "HELLO WORLD")
 
     def test_upper_argparse(self):
         args = ["-u", "hello world"]
@@ -162,6 +164,15 @@ class TestEcho(unittest.TestCase):
         parser = self.module.create_parser()
         ns = parser.parse_args(args)
         self.assertTrue(ns.title)
+
+    def test_all(self):
+        """check if all flags perform actions in correct order"""
+        args = ["-tul", "hello world"]
+        with Capturing() as output:
+            self.module.main(args)
+        assert output, "The program did not print anything."
+        self.assertEqual(output[0], "Hello World")
+
 
     #
     # Students: add more cmd line options tests here.

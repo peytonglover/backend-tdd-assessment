@@ -19,6 +19,7 @@ def to_title(text):
     result = text.title()
     return result
 
+
 def create_parser():
     """Returns an instance of argparse.ArgumentParser"""
     # your code here
@@ -40,16 +41,17 @@ def main(args):
     _lower = ns.lower
     _title = ns.title
     text = ns.text
-    
-    if _upper:
-        to_upper(text)
-    elif _lower:
-        to_lower(text)
-    elif _title:
-        to_title(text)
 
-    
-    return
+    if _title:
+        print(to_title(text))
+    elif _lower:
+        print(to_lower(text))
+    elif _upper:
+        print(to_upper(text))
+    else:
+        print(text)
+
+ 
 
 
 if __name__ == '__main__':
